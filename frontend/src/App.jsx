@@ -7,11 +7,12 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProducts from "./pages/AdminProducts";
 import AdminAddProduct from "./pages/AdminAddProduct";
+import AdminEditProduct from "./pages/AdminEditProduct";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+        <AuthProvider>
         <Routes>
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
@@ -31,11 +32,12 @@ function App() {
 
         <Route element={<ProtectedRoute role="admin" />}>
             <Route path="/admin/products/add" element={<AdminAddProduct />} />
+            <Route path="/admin/edit-product/:id" element={<AdminEditProduct />} />
           </Route>
 
         </Routes>
-      </Router>
     </AuthProvider>
+    </Router>
   );
 }
 

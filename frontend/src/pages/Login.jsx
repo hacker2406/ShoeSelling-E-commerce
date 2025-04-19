@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/Authcontext";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -20,7 +20,7 @@ const Login = () => {
       // Store user data and redirect
       login(data);
       if (data.isAdmin) {
-        navigate("/admin-dashboard"); // Redirect Admins
+        navigate("/admin/dashboard"); // Redirect Admins
       } else {
         navigate("/landing"); // Redirect Users
       }

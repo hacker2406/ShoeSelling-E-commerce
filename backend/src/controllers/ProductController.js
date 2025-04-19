@@ -1,30 +1,56 @@
 import Product from "../models/Product.js";
+import { cloudinary } from "../config/cloudinary.js";
+
 
 export const createProduct = async (req, res) => {
-    try {
-      // Log the incoming request data
-      console.log("Request Body:", req.body); // Debugging: Check what data is being sent
-  
-      const { name, description, price, category, images, stock } = req.body;
-  
-      // Check if all required fields are present
-      if (!name || !description || !price || !category || !images || !stock) {
-        console.log("Missing required fields"); // Debugging: Log if any field is missing
-        return res.status(400).json({ success: false, message: "All fields are required" });
-      }
-  
-      const newProduct = new Product({ name, description, price, category, images, stock });
-  
-      // Try to save the product and log success or failure
-      const savedProduct = await newProduct.save();
-      console.log("Product Saved:", savedProduct); // Debugging: Log the saved product
-  
-      res.status(201).json({ success: true, message: "Product created successfully", product: savedProduct });
-    } catch (error) {
-      console.error("Error creating product:", error); // Log the error in detail
-      res.status(500).json({ success: false, message: "Error creating product", error: error.message });
+  try {
+    const { name, description, price, category, sizes } = req.body;
+
+    // Validate required fields
+    if (!name || !description || !price || !category || !sizes) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
     }
-  };
+
+    // Upload images to Cloudinary
+    let images = [];
+    if (req.files && req.files.length > 0) {
+      const uploadPromises = req.files.map(async (file) => {
+        const uploadedImage = await cloudinary.uploader.upload(file.path);
+        return {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.secure_url,
+        };
+      });
+
+      images = await Promise.all(uploadPromises);
+    }
+
+    // Ensure `sizes` contains only valid shoe sizes (4-12)
+    const validSizes = {};
+    const allowedSizes = [4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const parsedSizes = JSON.parse(sizes);
+
+    allowedSizes.forEach((size) => {
+      validSizes[size] = parsedSizes[size] || 0;
+    });
+
+    // Create new product
+    const newProduct = new Product({
+      name,
+      description,
+      price,
+      category,
+      images,
+      sizes: validSizes,
+    });
+
+    const savedProduct = await newProduct.save();
+    res.status(201).json({ success: true, message: "Product created successfully", product: savedProduct });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error creating product", error: error.message });
+  }
+};
+
   
   
 
@@ -53,12 +79,46 @@ export const getProductById = async (req, res) => {
 // @desc Update product (Admin Only)
 export const updateProduct = async (req, res) => {
   try {
-    const updatedProduct = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { name, description, price, category, sizes, existingImages } = req.body;
 
-    if (!updatedProduct) return res.status(404).json({ success: false, message: "Product not found" });
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
 
+    // Handle existing images
+    let updatedImages = [];
+    if (existingImages) {
+      updatedImages = JSON.parse(existingImages); // Parse existing images from the request
+    }
+
+    // Handle new image uploads
+    if (req.files && req.files.length > 0) {
+      // Upload new images to Cloudinary
+      const uploadPromises = req.files.map(async (file) => {
+        const uploadedImage = await cloudinary.uploader.upload(file.path);
+        return {
+          public_id: uploadedImage.public_id,
+          url: uploadedImage.secure_url,
+        };
+      });
+
+      const newImages = await Promise.all(uploadPromises);
+      updatedImages = [...updatedImages, ...newImages]; // Combine existing and new images
+    }
+
+    // Update product fields
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
+    product.images = updatedImages; // Update images
+
+    const updatedProduct = await product.save();
     res.status(200).json({ success: true, message: "Product updated successfully", product: updatedProduct });
   } catch (error) {
+    console.error("Error updating product:", error);
     res.status(500).json({ success: false, message: "Error updating product", error: error.message });
   }
 };
@@ -66,12 +126,29 @@ export const updateProduct = async (req, res) => {
 // @desc Delete product (Admin Only)
 export const deleteProduct = async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.params.id);
+    console.log("Deleting product with ID:", req.params.id); // Debugging log
 
-    if (!deletedProduct) return res.status(404).json({ success: false, message: "Product not found" });
+    const product = await Product.findById(req.params.id);
 
+    if (!product) {
+      console.error("Product not found");
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    console.log("Product found:", product); // Debugging log
+
+    // Delete images from Cloudinary
+    const deletePromises = product.images.map((image) =>
+      cloudinary.uploader.destroy(image.public_id)
+    );
+    await Promise.all(deletePromises);
+
+    // Delete product from database
+    await product.deleteOne();
+    console.log("Product deleted successfully");
     res.status(200).json({ success: true, message: "Product deleted successfully" });
   } catch (error) {
+    console.error("Error deleting product:", error); // Debugging log
     res.status(500).json({ success: false, message: "Error deleting product", error: error.message });
   }
 };

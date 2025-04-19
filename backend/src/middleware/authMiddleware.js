@@ -3,23 +3,27 @@ import User from "../models/User.js";
 
 // Middleware to verify user authentication
 export const protect = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      console.log("No token provided");
-      return res.status(401).json({ message: "Not authorized" });
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")) {
+    try {
+      token = req.headers.authorization.split(" ")[1]; // Extract the token
+      console.log("Token received in middleware:", token); // Debugging log
+
+      const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+      console.log("Decoded token:", decoded); // Debugging log
+
+      req.user = await User.findById(decoded.id).select("-password"); // Attach user to request
+      console.log("User attached to request:", req.user); // Debugging log
+
+      next();
+    } catch (error) {
+      console.error("Token verification failed:", error.message); // Debugging log
+      res.status(401).json({ success: false, message: "Not authorized, token failed" });
     }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded JWT:", decoded); // Log the decoded JWT for debugging
-
-    req.user = await User.findById(decoded.id).select("-password");
-    console.log("User from DB:", req.user); // Log the user data from DB
-
-    next();
-  } catch (error) {
-    console.error("Error in protect middleware:", error); // Log error details
-    res.status(401).json({ message: "Not authorized" });
+  } else {
+    console.error("No token provided"); // Debugging log
+    res.status(401).json({ success: false, message: "Not authorized, no token" });
   }
 };
 
