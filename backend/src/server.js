@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import productRoutes from "./routes/productRoutes.js"
+import userRoutes from "./routes/userRoutes.js";
 
 // Load environment variables
 dotenv.config();
@@ -16,11 +17,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
+// use authentication Routes
 app.use("/api/auth", authRoutes);
 
 //Use product Routes
 app.use("/api/products", productRoutes);
+
+//Use user Routes
+app.use("/api/users", userRoutes);
 
 // Default Route
 app.get("/", (req, res) => {

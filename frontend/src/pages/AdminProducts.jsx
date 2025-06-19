@@ -70,75 +70,110 @@ const AdminProducts = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <AdminSidebar />
 
-      {/* Main Content */}
-      <main className="flex-1 p-10">
-        <h2 className="text-3xl font-semibold text-gray-800">Manage Products</h2>
-
-        {/* Add Product Button */}
-        <div className="mt-4">
-        <button
-          onClick={() => navigate("/admin/products/add")}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          + Add Product
-        </button>
+      {/* Main Content - Added margin-left to account for fixed sidebar */}
+      <main className="flex-1 p-8 ml-64">
+        {/* Header Section */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 pb-1">
+              Manage Products
+            </h2>
+            <button
+              onClick={() => navigate("/admin/products/add")}
+              className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg 
+              shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 
+              flex items-center space-x-2"
+            >
+              <span className="text-xl">+</span>
+              <span>Add Product</span>
+            </button>
+          </div>
         </div>
 
-        {/* Product List */}
-        <div className="mt-6 space-y-4">
+        {/* Products Grid */}
+        <div className="space-y-6">
           {products.map((product) => (
             <div
               key={product._id}
-              className="bg-white rounded-lg shadow-md p-4 flex items-center justify-between"
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 
+              overflow-hidden border border-gray-100"
             >
-              {/* Product Image and Info */}
-              <div className="flex items-center space-x-4">
-                <img
-                  src={product.images[0]?.url || "https://via.placeholder.com/150"}
-                  alt={product.name}
-                  className="w-20 h-20 object-cover rounded-md"
-                />
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{product.name}</h3>
-                  <p className="text-gray-600">${product.price}</p>
-                  <p className="text-gray-500 text-sm">{product.category}</p>
+              <div className="p-6 flex items-center gap-6">
+                {/* Image Section */}
+                <div className="relative group">
+                  <img
+                    src={product.images[0]?.url || "https://via.placeholder.com/150"}
+                    alt={product.name}
+                    className="w-32 h-32 object-cover rounded-lg shadow-md group-hover:scale-105 
+                    transition-transform duration-200"
+                  />
                 </div>
-              </div>
 
-              {/* Stock Info */}
-              <div className="flex-1 mx-6">
-                <div className="bg-gray-100 rounded-lg p-2 max-h-20 overflow-y-auto">
-                  {product.sizes && Object.keys(product.sizes).length > 0 ? (
-                    Object.entries(product.sizes).map(([size, quantity]) => (
-                      <div key={size} className="flex justify-between text-sm text-gray-700">
-                        <span>Size: {size}</span>
-                        <span>Available: {quantity}</span>
+                {/* Product Info Section */}
+                <div className="flex-1">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-800 mb-2">{product.name}</h3>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full">
+                          ${product.price}
+                        </span>
+                        <span className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full">
+                          {product.category}
+                        </span>
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-500">No stock information available</p>
-                  )}
-                </div>
-              </div>
+                    </div>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex gap-3">
+                      <button
+                        onClick={() => navigate(`/admin/edit-product/${product._id}`)}
+                        className="px-4 py-2 text-sm bg-blue-50 text-blue-600 rounded-lg 
+                        hover:bg-blue-100 transition-colors duration-200"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product._id)}
+                        className="px-4 py-2 text-sm bg-red-50 text-red-600 rounded-lg 
+                        hover:bg-red-100 transition-colors duration-200"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
 
-              {/* Action Buttons */}
-              <div className="flex space-x-4">
-                <button
-                  onClick={() => navigate(`/admin/edit-product/${product._id}`)}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(product._id)}
-                  className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                >
-                  Delete
-                </button>
+                  {/* Stock Info */}
+                  <div className="mt-4">
+                    <div className="bg-gray-50 rounded-lg p-3 max-h-24 overflow-y-auto 
+                    scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                      {product.sizes && Object.keys(product.sizes).length > 0 ? (
+                        <div className="grid grid-cols-4 gap-2">
+                          {Object.entries(product.sizes).map(([size, quantity]) => (
+                            <div 
+                              key={size}
+                              className="flex justify-between items-center p-2 bg-white 
+                              rounded-md shadow-sm"
+                            >
+                              <span className="font-medium text-gray-600">Size {size}</span>
+                              <span className={`px-2 py-1 rounded-full text-xs 
+                                ${quantity > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                {quantity}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-500 text-center py-2">
+                          No stock information available
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ))}

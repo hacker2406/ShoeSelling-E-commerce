@@ -4,10 +4,10 @@ import { cloudinary } from "../config/cloudinary.js";
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, sizes } = req.body;
+    const { name, description, price, category, sizes, section } = req.body; // <-- add section
 
     // Validate required fields
-    if (!name || !description || !price || !category || !sizes) {
+    if (!name || !description || !price || !category || !sizes || !section) { // <-- add section
       return res.status(400).json({ success: false, message: "All fields are required" });
     }
 
@@ -40,6 +40,7 @@ export const createProduct = async (req, res) => {
       description,
       price,
       category,
+      section, // <-- add section
       images,
       sizes: validSizes,
     });
@@ -79,7 +80,7 @@ export const getProductById = async (req, res) => {
 // @desc Update product (Admin Only)
 export const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, sizes, existingImages } = req.body;
+    const { name, description, price, category, sizes, existingImages, section } = req.body; // <-- add section
 
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -112,6 +113,7 @@ export const updateProduct = async (req, res) => {
     product.description = description || product.description;
     product.price = price || product.price;
     product.category = category || product.category;
+    product.section = section || product.section; // <-- add this line
     product.sizes = sizes ? JSON.parse(sizes) : product.sizes;
     product.images = updatedImages; // Update images
 

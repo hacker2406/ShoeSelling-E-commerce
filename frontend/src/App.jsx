@@ -8,6 +8,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminProducts from "./pages/AdminProducts";
 import AdminAddProduct from "./pages/AdminAddProduct";
 import AdminEditProduct from "./pages/AdminEditProduct";
+import MyAccount from "./pages/MyAccount";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 
 function App() {
   return (
@@ -15,17 +18,24 @@ function App() {
         <AuthProvider>
         <Routes>
           {/* Public Routes */}
+
+          <Route path="/" />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/product/:id" element={<ProductDetail />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute role="user" />}>
             <Route path="/landing" element={<Landing />} />
+            <Route path="/my-account" element={<MyAccount />} />
           </Route>
 
           <Route element={<ProtectedRoute role="admin" />}>
             <Route path="/admin-dashboard" element={<AdminDashboard />} />
           </Route>
+
+
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/products" element={<AdminProducts />} />

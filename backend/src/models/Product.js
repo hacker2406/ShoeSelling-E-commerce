@@ -8,6 +8,11 @@ const productSchema = new mongoose.Schema(
     description: { type: String, required: true },
     price: { type: Number, required: true },
     category: { type: String, required: true },
+    section: {
+      type: String,
+      enum: ["male", "female", "kids"],
+      required: true,
+    },
     images: [
       {
         public_id: { type: String, required: true }, // Cloudinary public ID
