@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useCart } from "../context/CartContext";
 
 const SIZES = [4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -9,6 +10,9 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
+  const [adding, setAdding] = useState(false);
+  const [message, setMessage] = useState("");
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -27,9 +31,23 @@ const ProductDetail = () => {
   if (loading) return <div className="text-center">Loading...</div>;
   if (!product) return <div className="text-center text-red-500">Product not found.</div>;
 
-  
   // Ensure sizes is always an object
   const sizeStock = typeof product.sizes === "object" && product.sizes !== null ? product.sizes : {};
+
+  // Add to cart handler
+  const handleAddToCart = async () => {
+    if (!selectedSize) return;
+    setAdding(true);
+    setMessage("");
+    try {
+      await addToCart(product._id, 1, selectedSize);
+      setMessage("Added to cart!");
+    } catch (err) {
+      setMessage(err?.response?.data?.message || "Could not add to cart.");
+    }
+    setAdding(false);
+    setTimeout(() => setMessage(""), 2000);
+  };
 
   return (
     <div className="max-w-5xl mx-auto p-8 bg-white rounded-xl shadow-lg mt-10 flex flex-col md:flex-row gap-10">
@@ -93,10 +111,18 @@ const ProductDetail = () => {
           {/* Add to Cart Button */}
           <button
             className="w-full py-3 bg-blue-600 text-white rounded-lg font-semibold text-lg shadow hover:bg-blue-700 transition"
-            disabled={!selectedSize}
+            disabled={!selectedSize || adding}
+            onClick={handleAddToCart}
           >
-            {selectedSize ? "Add to cart" : "Select a size"}
+            {adding
+              ? "Adding..."
+              : selectedSize
+              ? "Add to cart"
+              : "Select a size"}
           </button>
+          {message && (
+            <div className="mt-2 text-center text-green-600 font-semibold">{message}</div>
+          )}
           {/* Description */}
           <div className="mt-8">
             <div className="font-semibold mb-1">Description</div>
