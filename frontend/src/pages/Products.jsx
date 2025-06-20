@@ -4,6 +4,7 @@ import ProductCard from "../components/ProductCard";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
+//hello
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [section, setSection] = useState("all");
