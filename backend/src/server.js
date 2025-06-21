@@ -7,7 +7,7 @@ import productRoutes from "./routes/productRoutes.js"
 import userRoutes from "./routes/userRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
+import adminRoutes from "./routes/adminRoutes.js";
 // Load environment variables
 dotenv.config();
 
@@ -33,6 +33,9 @@ app.use("/api/cart", cartRoutes);
 
 // Use order Routes
 app.use("/api/orders", orderRoutes);
+
+// Use admin Routes
+app.use("/api/admin", adminRoutes);
 
 // Default Route
 app.get("/", (req, res) => {

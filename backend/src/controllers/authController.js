@@ -76,3 +76,35 @@ const generateToken = (id, isAdmin) => {
       res.status(500).json({ message: "Server Error" });
     }
   };
+
+  /**
+   * Register Admin
+   */
+  export const registerAdmin = async (req, res) => {
+    const { name, email, password, phone } = req.body;
+    try {
+      let userExists = await User.findOne({ email });
+      if (userExists) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = new User({
+        name,
+        email,
+        password: hashedPassword,
+        phone,
+        isAdmin: true, // <-- Always true for this route!
+      });
+      const savedUser = await user.save();
+      res.json({
+        _id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+        phone: savedUser.phone,
+        isAdmin: savedUser.isAdmin,
+        token: generateToken(savedUser._id, savedUser.isAdmin),
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Server Error" });
+    }
+  };

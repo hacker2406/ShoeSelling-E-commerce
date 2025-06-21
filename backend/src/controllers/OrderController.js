@@ -65,6 +65,7 @@ export const placeOrder = async (req, res) => {
 
     res.status(201).json(order);
   } catch (err) {
+    console.error("Order placement error:", err);
     res.status(500).json({ message: "Failed to place order." });
   }
 };

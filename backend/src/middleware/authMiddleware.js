@@ -9,6 +9,7 @@ export const protect = async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1]; // Extract the token
       console.log("Token received in middleware:", token); // Debugging log
+      console.log("Authorization header received:", req.headers.authorization); // Debugging log
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
       console.log("Decoded token:", decoded); // Debugging log

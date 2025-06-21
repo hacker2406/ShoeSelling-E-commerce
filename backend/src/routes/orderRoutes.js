@@ -10,11 +10,11 @@ router.post("/", protect, placeOrder);
 // Get all orders for current user
 router.get("/", protect, getMyOrders);
 
-// Get a specific order by ID for current user
-router.get("/:id", protect, getOrderById);
-
 // Get all orders (admin)
 router.get("/all", protect, adminOnly, getAllOrders);
+
+// Get a specific order by ID for current user
+router.get("/:id", protect, getOrderById);
 
 // Update order status (admin)
 router.put("/:id/status", protect, adminOnly, updateOrderStatus);
