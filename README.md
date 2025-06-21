@@ -2,15 +2,19 @@
 
 A modern e-commerce web application built with the MERN stack (MongoDB, Express, React, Node.js).
 
+---
+
 ## Features
 
 - User registration & login (JWT authentication)
 - Product browsing and detail pages
 - Add to cart, update cart, and checkout
 - Order placement and order history
-- Admin dashboard for product and order management
-- interactive admin lead dashboard to be added in process
-- payment method to be added in process
+- **Admin dashboard** for product, order, and user management
+- Interactive admin lead dashboard (in progress)
+- Payment integration (coming soon)
+
+---
 
 ## Tech Stack
 
@@ -18,6 +22,8 @@ A modern e-commerce web application built with the MERN stack (MongoDB, Express,
 - **Backend:** Node.js, Express, MongoDB, Mongoose, JWT
 - **Authentication:** JWT (JSON Web Token)
 - **Image Upload:** Cloudinary
+
+---
 
 ## Getting Started
 
@@ -62,6 +68,8 @@ A modern e-commerce web application built with the MERN stack (MongoDB, Express,
 5. **Visit:**  
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+---
+
 ## Folder Structure
 
 ```
@@ -69,6 +77,38 @@ A modern e-commerce web application built with the MERN stack (MongoDB, Express,
 /frontend  # React app, pages, components, context
 ```
 
+---
+
+## Admin Info (for Recruiters)
+
+- **Admin Dashboard:**  
+  After registering the first user, that user is automatically set as admin.
+- **Admin Login:**  
+  Use the credentials of the first registered user to log in as admin.
+- **Admin Features:**  
+  - Manage products, orders, and users
+  - Approve orders
+  - View dashboard analytics and leads
+  - Register additional admins (from the admin panel)
+- **Demo Admin Credentials (if deployed):**  
+  ```
+  Email: admin@example.com
+  Password: yourpassword
+  ```
+  *(Or register a new user to become admin if running locally for the first time)*
+
+---
+
+## Roadmap
+
+- [x] Core e-commerce features
+- [x] Admin dashboard & management
+- [ ] Interactive analytics dashboard (in progress)
+- [ ] Payment gateway integration (coming soon)
+- [ ] Product reviews, wishlist, and more
+
+---
+
 ## License
 
-This project is for educational/demo purposes.
+This project is for educational/demo purposes only.
