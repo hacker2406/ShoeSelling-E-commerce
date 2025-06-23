@@ -92,8 +92,8 @@ A modern e-commerce web application built with the MERN stack (MongoDB, Express,
   - Register additional admins (from the admin panel)
 - **Demo Admin Credentials (if deployed):**  
   ```
-  Email: admin@example.com
-  Password: yourpassword
+  Email: ratul.9paul@gmail.com
+  Password: Broexample
   ```
   *(Or register a new user to become admin if running locally for the first time)*
 
