@@ -10,6 +10,8 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminAddProduct from "./pages/AdminAddProduct";
 import AdminEditProduct from "./pages/AdminEditProduct";
 import MyAccount from "./pages/MyAccount";
+import EditProfile from "./pages/EditProfile";
+import ChangePassword from "./pages/ChangePassword";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
@@ -41,6 +43,8 @@ function App() {
             <Route element={<ProtectedRoute role="user" />}>
               <Route path="/landing" element={<Landing />} />
               <Route path="/my-account" element={<MyAccount />} />
+              <Route path="/edit-profile" element={<EditProfile />} />
+              <Route path="/change-password" element={<ChangePassword />} />
             </Route>
 
             <Route element={<ProtectedRoute role="admin" />}>

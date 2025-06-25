@@ -55,7 +55,7 @@ const Header = () => {
             {/* Dropdown Menu */}
             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200">
               <Link
-                to="/profile"
+                to="/my-account"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 My Account

@@ -54,7 +54,7 @@ const Landing = () => {
             </p>
             <button
               className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all"
-              onClick={() => navigate("/my-account")}
+              onClick={() => navigate("/edit-profile")}
             >
               Manage Account
             </button>
